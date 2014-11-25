@@ -1,20 +1,42 @@
-SpaceShip Bubba;//your variable declarations here
+SpaceShip Bubba;
+
+ArrayList <Asteroid> Flubba;
+//Asteroid[] Flubba;
+
+//your variable declarations here
 public void setup() 
 {
   size(800,800);
-  Bubba = new SpaceShip();//your code here
+  Bubba = new SpaceShip();
+  Flubba = new ArrayList <Asteroid>();
+  //Flubba = new Asteroid[30];
+  
+  for(int nI = 0; nI < 10; nI++){
+    Flubba.add(new Asteroid());
+  }//your code here
 }
 public void draw() 
 {
-  background(0,0,0);  
+  background(0,0,0);
   Bubba.show();
   Bubba.move();
+  for (int nI = 0; nI < Flubba.size(); nI++){
+    Flubba.get(nI).show();
+    Flubba.get(nI).move();
+    
+    if(dist((float)Flubba.get(nI).myCenterX, (float)Flubba.get(nI).myCenterY, (float)Bubba.myCenterX, (float)Bubba.myCenterY) < 20){
+      
+        Flubba.remove(nI);
+      
+    }  
+  }
   
+
   //your code here
 }
 public void keyPressed()
-  {
-    float accelSpeed = .3;
+{
+    float accelSpeed = .5;
     if (keyPressed && keyCode == LEFT){
       Bubba.myPointDirection -= 20;
     } else if (keyPressed && keyCode == RIGHT){
@@ -29,10 +51,10 @@ public void keyPressed()
       Bubba.myCenterX = Math.random()*500;
       Bubba.myCenterY = Math.random()*500;
     }
-  } 
+} 
 class SpaceShip extends Floater  
 {   
-    public SpaceShip(){
+    private SpaceShip(){
       corners = 4;
       xCorners = new int[corners];
       yCorners = new int[corners];
@@ -64,10 +86,71 @@ class SpaceShip extends Floater
     public double getDirectionX(){return myDirectionX;}
     public double getDirectionY(){return myDirectionY;}
     public double getPointDirection(){return myPointDirection;}
+}
 
+class Asteroid extends Floater
+{
+    int holdSpeed;
+    private Asteroid(){
+      corners = 6;
+      xCorners = new int[corners];
+      yCorners = new int[corners];
+      xCorners[0] = 10;
+      yCorners[0] = 10;
+      xCorners[1] = 20;
+      yCorners[1] = 10;
+      xCorners[2] = 25;
+      yCorners[2] = 20;
+      xCorners[3] = 20;
+      yCorners[3] = 30;
+      xCorners[4] = 10;
+      yCorners[4] = 30;
+      xCorners[5] = 5;
+      yCorners[5] = 20;
+      myColor = color(255,0,0);
+      myCenterX =  Math.random()*800;
+      myCenterY =  0;
+      myPointDirection = Math.random()*6-3;
+
+      myDirectionX = Math.random()*3 - 1;
+      myDirectionY = Math.random()*3 - 1;
+      
+
+      
+      holdSpeed = (int)(Math.random()*5+1);
+       if (Math.random() < .5){
+         holdSpeed = -1 * holdSpeed;
+       } else
+       {
+        holdSpeed = holdSpeed;
+       }
+    }
+
+
+
+    public void setX(int x){myCenterX = x;}
+    public void setY(int y){myCenterY = y;}
+    public void setDirectionX(double dirx){myDirectionX = dirx;}
+    public void setDirectionY(double diry){myDirectionY = diry;}
+    public void setPointDirection(int degrees){myPointDirection = degrees;} 
+
+    public int getX(){return (int)myCenterX;}
+    public int getY(){return (int)myCenterY;}
+    public double getDirectionX(){return myDirectionX;}
+    public double getDirectionY(){return myDirectionY;}
+    public double getPointDirection(){return myPointDirection;}
+
+     public void move(){
+       myPointDirection+=holdSpeed;
+       myCenterX += myDirectionX;    
+       myCenterY += myDirectionY; 
+       super.move();
+      }
+
+}
 
     //your code here
-}
+
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
 {   
   protected int corners;  //the number of corners, a triangular floater has 3   
@@ -147,4 +230,5 @@ abstract class Floater //Do NOT modify the Floater class! Make changes in the Sp
   }
     
 } 
+
 
