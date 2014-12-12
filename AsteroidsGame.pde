@@ -1,6 +1,7 @@
 SpaceShip Bubba;
 
 ArrayList <Asteroid> Flubba;
+ArrayList <Bullet> Bulla;
 //Asteroid[] Flubba;
 
 //your variable declarations here
@@ -8,70 +9,97 @@ public void setup()
 {
   size(800,800);
   Bubba = new SpaceShip();
+  Bulla = new ArrayList <Bullet>();
   Flubba = new ArrayList <Asteroid>();
   //Flubba = new Asteroid[30];
   
-  for(int nI = 0; nI < 10; nI++){
+  for(int nI = 0; nI < 50; nI++){
     Flubba.add(new Asteroid());
   }//your code here
 }
+
 public void draw() 
 {
   background(0,0,0);
   Bubba.show();
   Bubba.move();
-  for (int nI = 0; nI < Flubba.size(); nI++){
-    Flubba.get(nI).show();
-    Flubba.get(nI).move();
-    
-    if(dist((float)Flubba.get(nI).myCenterX, (float)Flubba.get(nI).myCenterY, (float)Bubba.myCenterX, (float)Bubba.myCenterY) < 20){
+  
+  for(int nI = 0; nI<Bulla.size(); nI++){
+      Bulla.get(nI).show();
+      Bulla.get(nI).move();
       
-        Flubba.remove(nI);
-      
-    }  
-  }
+      //flubba loop
+    }
+  for (int nJ = 0; nJ < Flubba.size(); nJ++){
+      Flubba.get(nJ).show();
+      Flubba.get(nJ).move();
+  }  
+  for(int nI = 0; nI < Bulla.size(); nI++) {
+    for(int nJ = 0; nJ < Flubba.size(); nJ++){
+      if(dist((float)Bulla.get(nI).getX(), (float)Bulla.get(nI).getY(), (float)Flubba.get(nJ).getX(), (float)Flubba.get(nJ).getY()) < 20){
+        Flubba.remove(nJ);
+      }
+    }
+  } 
+  }  
+
+  
+  
+  
   
 
   //your code here
-}
+
+
+
 public void keyPressed()
 {
     float accelSpeed = .5;
-    if (keyPressed && keyCode == LEFT){
+    if (keyCode == LEFT){
       Bubba.myPointDirection -= 20;
-    } else if (keyPressed && keyCode == RIGHT){
+      
+    } else if (keyCode == RIGHT){
       Bubba.myPointDirection += 20;
-    } if (keyPressed && keyCode == UP){
+    } if (keyCode == UP){
       Bubba.accelerate(accelSpeed);
-    } else if (keyPressed && keyCode == DOWN){
+    } else if (keyCode == DOWN){
       Bubba.accelerate(-accelSpeed);
     } 
-    if (keyPressed && key == '2' ){
+    if (key == '2' ){
       
       Bubba.myCenterX = Math.random()*500;
       Bubba.myCenterY = Math.random()*500;
     }
+    if(key == '1'){
+      
+        Bulla.add(new Bullet(Bubba));
+      
+
+    }
+
 } 
+
 class SpaceShip extends Floater  
 {   
     private SpaceShip(){
       corners = 4;
       xCorners = new int[corners];
       yCorners = new int[corners];
-      xCorners[0] = -8;
-      yCorners[0] = -8;
-      xCorners[1] = 16;
-      yCorners[1] = 0;
-      xCorners[2] = -8;
-      yCorners[2] = 8;
-      xCorners[3] = -2;
-      yCorners[3] = 0;
+      xCorners[0] = (int)myCenterX-8;
+      yCorners[0] = (int)myCenterY-8;
+      xCorners[1] = (int)myCenterX+16;
+      yCorners[1] = (int)myCenterY;
+      xCorners[2] = (int)myCenterX-8;
+      yCorners[2] = (int)myCenterY+8;
+      xCorners[3] = (int)myCenterX-2;
+      yCorners[3] = (int)myCenterY;
       myColor = color(255,0,0);
-      myCenterX =  320;
+      myCenterX =  240;
       myCenterY =  240;
+      myPointDirection = 50;
       myDirectionX = 0;
       myDirectionY = 0;
-      myPointDirection = -50;
+      
 
     }
 
@@ -86,6 +114,9 @@ class SpaceShip extends Floater
     public double getDirectionX(){return myDirectionX;}
     public double getDirectionY(){return myDirectionY;}
     public double getPointDirection(){return myPointDirection;}
+
+
+
 }
 
 class Asteroid extends Floater
@@ -95,18 +126,18 @@ class Asteroid extends Floater
       corners = 6;
       xCorners = new int[corners];
       yCorners = new int[corners];
-      xCorners[0] = 10;
-      yCorners[0] = 10;
-      xCorners[1] = 20;
-      yCorners[1] = 10;
-      xCorners[2] = 25;
-      yCorners[2] = 20;
-      xCorners[3] = 20;
-      yCorners[3] = 30;
-      xCorners[4] = 10;
-      yCorners[4] = 30;
-      xCorners[5] = 5;
-      yCorners[5] = 20;
+      xCorners[0] = (int)myCenterX-5;
+      yCorners[0] = (int)myCenterY-5;
+      xCorners[1] = (int)myCenterX+5;
+      yCorners[1] = (int)myCenterY-5;
+      xCorners[2] = (int)myCenterX+10;
+      yCorners[2] = (int)myCenterY;
+      xCorners[3] = (int)myCenterX+5;
+      yCorners[3] = (int)myCenterY+5;
+      xCorners[4] = (int)myCenterX-5;
+      yCorners[4] = (int)myCenterY+5;
+      xCorners[5] = (int)myCenterX-10;
+      yCorners[5] = (int)myCenterY;
       myColor = color(255,0,0);
       myCenterX =  Math.random()*800;
       myCenterY =  0;
@@ -147,7 +178,64 @@ class Asteroid extends Floater
        super.move();
       }
 
-}
+};
+
+class Bullet extends Floater
+{
+    
+    
+    private Bullet(SpaceShip theShip){
+      corners = 5;
+      xCorners = new int[corners];
+      yCorners = new int[corners];
+      xCorners[0] = (int)myCenterX+2;
+      yCorners[0] = (int)myCenterY;
+      xCorners[1] = (int)myCenterX+1;
+      yCorners[1] = (int)myCenterY+1;
+      xCorners[2] = (int)myCenterX-2;
+      yCorners[2] = (int)myCenterY+1;
+      xCorners[3] = (int)myCenterX-2;
+      yCorners[3] = (int)myCenterY-1;
+      
+      xCorners[4] = (int)myCenterX+1;
+      yCorners[4] = (int)myCenterY-1;
+      myColor = color(255,0,0);
+      myCenterX =  theShip.getX();
+      myCenterY =  theShip.getY();
+      myPointDirection = theShip.getPointDirection();
+      double dRadians = myPointDirection*(Math.PI/180);
+      myDirectionX = 5*Math.cos(dRadians)+theShip.getDirectionX();
+      myDirectionY = 5*Math.sin(dRadians)+theShip.getDirectionY();
+      
+      
+    }
+
+    public void setX(int x){myCenterX = x;}
+    public void setY(int y){myCenterY = y;}
+    public void setDirectionX(double dirx){myDirectionX = dirx;}
+    public void setDirectionY(double diry){myDirectionY = diry;}
+    public void setPointDirection(int degrees){myPointDirection = degrees;} 
+
+    public int getX(){return (int)myCenterX;}
+    public int getY(){return (int)myCenterY;}
+    public double getDirectionX(){return myDirectionX;}
+    public double getDirectionY(){return myDirectionY;}
+    public double getPointDirection(){return myPointDirection;}
+    
+    
+
+
+    
+      public void move(){
+       
+       myCenterX += myDirectionX;    
+       myCenterY += myDirectionY; 
+       super.move();
+       
+      }
+
+
+};
 
     //your code here
 
